@@ -15,10 +15,13 @@ public class Deck
     public Deck()
     {
         this.Cards = new List<Card>();
+        this._random = new Random();
         GenerateStandardPokerDeck();
     }
 
     public List<Card> Cards { get; protected set; }
+
+    private readonly Random _random;
 
     /// <summary>
     /// Sets the cards in the deck to a standard poker-style playing deck.
@@ -45,20 +48,17 @@ public class Deck
     public void Shuffle()
     {
         if (Cards is null || !Cards.Any())
-        {
             return;
-        }
         int topIndex = Cards.Count - 1;
-        Random random = new Random();
         for (int i = 0; i < topIndex; i++)
         {
-            int j = random.Next(topIndex);
+            int j = _random.Next(topIndex);
             SwapTwoCardsInDeck(i, j);
         }
     }
 
     /// <summary>
-    /// Swaps two cards in place.
+    /// Swaps two cards of specified indices in place in the deck.
     /// </summary>
     /// <param name="cardIndex1"></param>
     /// <param name="cardIndex2"></param>

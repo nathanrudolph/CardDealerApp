@@ -5,11 +5,38 @@ using System.Text;
 using System.Threading.Tasks;
 using DeckOfCards;
 using DeckOfCards.Models;
+using DeckOfCards.Validators;
 
 namespace DeckOfCardsTest;
 
 public class DeckTests
 {
+    [Fact]
+    public void NewDeck_ShouldHaveValidCards()
+    {
+        var deck = new Deck();
+
+        deck.GenerateStandardPokerDeck();
+        var cardValidator = new CardValidator();
+        foreach (var card in deck.Cards)
+        {
+            var validationResult = cardValidator.Validate(card);
+            validationResult.IsValid.Should().BeTrue();
+        }
+    }
+
+    [Fact]
+    public void NewDeck_ShouldBeValidDeck()
+    {
+        var deck = new Deck();
+
+        deck.GenerateStandardPokerDeck();
+        var deckValidator = new DeckValidator();
+        var validationResult = deckValidator.Validate(deck);
+
+        validationResult.IsValid.Should().BeTrue();
+    }
+
     [Fact]
     public void NewDeck_ShouldHave52Cards()
     {
@@ -30,13 +57,24 @@ public class DeckTests
         deck.Cards.Should().OnlyHaveUniqueItems();
     }
 
+    [Fact]
+    public void ShuffledDeck_ShouldBeValidDeck()
+    {
+        var deck = new Deck();
+
+        deck.Shuffle();
+        var deckValidator = new DeckValidator();
+        var validationResult = deckValidator.Validate(deck);
+
+        validationResult.IsValid.Should().BeTrue();
+    }
+
     [Fact] 
     public void ShuffledDeck_ShouldHaveTheSameNumberOfCards()
     {
         var deck = new Deck();
         int originalCount = deck.Cards.Count;
 
-        deck.GenerateStandardPokerDeck();
         deck.Shuffle();
 
         deck.Cards.Should().HaveCount(originalCount);
@@ -46,11 +84,25 @@ public class DeckTests
     public void ShuffledDeck_ShouldContainSameCards()
     {
         var deck = new Deck();
-        var originalCards = deck.Cards;
+        var originalCards = new List<Card>(deck.Cards);
 
-        throw new NotImplementedException();
+        deck.Shuffle();
+        var shuffledCards = new List<Card>(deck.Cards);
+
+        shuffledCards.Should().BeEquivalentTo(originalCards);
     }
 
+    [Fact]
+    public void DealOneCard_ShouldStillHaveValidDeck()
+    {
+        var deck = new Deck();
+
+        deck.DealOneCard();
+        var deckValidator = new DeckValidator();
+        var validationResult = deckValidator.Validate(deck);
+
+        validationResult.IsValid.Should().BeTrue();
+    }
 
     [Fact]
     public void DealOneCard_ShouldRemoveExactlyOneCardFromDeck()

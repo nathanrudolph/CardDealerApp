@@ -12,14 +12,15 @@ public class DeckValidator : AbstractValidator<Deck>
 {
     public DeckValidator()
     {
+        RuleForEach(d => d.Cards).SetValidator(new CardValidator());
         RuleFor(d => d.Cards)
             .NotNull().WithMessage("{PropertyName} cannot be null.")
-            .Must(cards => cards.Count <= 52).WithMessage("{PropertyName} cannot contain more than 52 cards.")
-            .Must(cards => ContainNoDuplicates(cards)).WithMessage("{PropertyName} cannot ");
+            .Must(cardList => cardList.Count <= 52).WithMessage("{PropertyName} cannot contain more than 52 cards.")
+            .Must(ContainNoDuplicates).WithMessage("{PropertyName} cannot contain duplicate cards.");
     }
 
-    public bool ContainNoDuplicates(List<Card> cards)
+    protected bool ContainNoDuplicates(List<Card> cards)
     {
-        throw new NotImplementedException();
+        return cards.Distinct().Count() == cards.Count;
     }
 }
