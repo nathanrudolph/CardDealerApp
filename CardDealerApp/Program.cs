@@ -1,6 +1,7 @@
 ﻿using DeckOfCards;
 using DeckOfCards.Models;
 
+Console.WriteLine("Getting a new deck of cards...");
 var deck = new Deck();
 
 Console.WriteLine("Shuffling the deck...");
